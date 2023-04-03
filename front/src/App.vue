@@ -1,24 +1,82 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="list">
+    <ul>
+      <li v-for="cat in data" :key="cat.id" @click="selectImage(cat)">
+        {{ cat.breeds[0].name }}
+      </li>
+    </ul>
+  </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div class="image">
+    <div class="image-container" ref="bar">
+      <span v-if="!catSelected" class="welcome-text">Click on a name to show details</span>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      <div v-else class="image-content">
+        <img
+          :style="{
+            height: catSelected.height + 'px',
+            backgroundImage: 'url(' + catSelected.url + ')'
+          }"
+          alt=""
+          @click="increaseCounter"
+        />
+
+        <div class="image-content-text-container">
+          <span>
+            {{ catSelected.breeds[0].description }}
+          </span>
+
+          <span>Origin&nbsp;: {{ catSelected.breeds[0].origin }}</span>
+          <span>Clicks&nbsp;: {{ catSelected.clicks }}</span>
+        </div>
+      </div>
     </div>
-  </header>
-
-  <RouterView />
+  </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      data: [],
+      catSelected: null
+    }
+  },
+  methods: {
+    selectImage(cat) {
+      this.catSelected = cat
+      this.scrollTo()
+    },
+    increaseCounter() {
+      this.catSelected.clicks += 1
+    },
+    hydrateData() {
+      this.data.map((itm) => {
+        itm.clicks = 0
+      })
+    },
+    scrollTo() {
+      console.log(this.$refs)
+      this.$nextTick(() => this.$refs.bar.scrollIntoView({ behavior: 'smooth' }))
+    }
+  },
+
+  mounted() {
+    const apiKey = import.meta.env.VITE_API_KEY
+    const limitNumber = 10
+    const breedIds = 'beng,mcoo,sphy'
+    const apiUrl = 'https://api.thecatapi.com/v1/images/search?'
+
+    fetch(`${apiUrl}limit=${limitNumber}&breed_ids=${breedIds}&api_key=${apiKey}`).then(
+      async (response) => {
+        const jsonData = await response.json()
+        this.data = jsonData
+        this.hydrateData()
+      }
+    )
+  }
+}
+</script>
 
 <style scoped>
 header {
@@ -26,60 +84,91 @@ header {
   max-height: 100vh;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.list ul {
+  list-style: none;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
+.list ul li {
+  border: 1px solid white;
+  border-radius: 20px;
+  padding: 10px;
+  width: 300px;
+  cursor: pointer;
   text-align: center;
-  margin-top: 2rem;
+  margin: 10px;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.list ul :first-child {
+  margin-top: unset;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.list ul :last-child {
+  margin-bottom: unset;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.image-container {
+  border: 1px solid white;
+  height: 600px;
+  width: 500px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  flex-direction: column;
 }
 
-nav a:first-of-type {
-  border: 0;
+.image-content-text-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (min-width: 1024px) {
-  header {
+.image-content-text-container :first-child {
+  margin-top: 0;
+}
+
+.image-content-text-container span {
+  margin-top: 10px;
+}
+
+.image {
+  display: flex;
+  align-items: center;
+}
+
+.image-content {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.image-content img {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .list {
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    justify-content: center;
+    padding: 20px;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .list ul {
+    padding: unset;
   }
 
-  header .wrapper {
+  .image {
     display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+    justify-content: center;
+    padding: 20px;
   }
 }
 </style>
