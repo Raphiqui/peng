@@ -27,6 +27,13 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 npm install
 ```
 
+Create a .env file at the root project to integrate the API secret values
+
+```sh
+VITE_API_KEY=XXXXX
+VITE_API_URL=XXXXX
+```
+
 ### Compile and Hot-Reload for Development
 
 ```sh
