@@ -6,4 +6,8 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.wlc-text {
+  text-align: center;
+}
+</style>

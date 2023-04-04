@@ -38,7 +38,8 @@ export default {
   width: 300px;
   cursor: pointer;
   text-align: center;
-  margin: 10px;
+  margin: 10px 0;
+  box-sizing: border-box;
 }
 
 .list ul :first-child {
@@ -54,6 +55,15 @@ export default {
     display: flex;
     justify-content: center;
     padding: 20px;
+  }
+
+  .list ul {
+    max-width: 320px;
+    width: 100%;
+  }
+
+  .list ul li {
+    width: 100%;
   }
 }
 </style>
