@@ -42,6 +42,10 @@ export default {
       })
     },
     scrollTo() {
+      /**
+       * Most likely used to improve mobile experience as list is above and image is below, each time a cat breed is
+       * selected the view will scroll to the result
+       */
       this.$nextTick(() => this.$refs.imgContainer.scrollIntoView({ behavior: 'smooth' }))
     }
   },

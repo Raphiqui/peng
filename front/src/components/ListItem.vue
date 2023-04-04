@@ -14,11 +14,14 @@ export default {
     data: {
       type: Array,
       default: () => []
-    },
+    }
   },
 
   methods: {
     selectCatBreed(cat) {
+      /**
+       * Emit an event to update data into parent component
+       */
       this.$emit('catBreedSelected', cat)
     }
   }
